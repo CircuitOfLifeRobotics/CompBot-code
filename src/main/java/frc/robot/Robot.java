@@ -28,6 +28,7 @@ import frc.utilities.NavX;
 
 public class Robot extends TimedRobot {
 
+  Auto a;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -51,13 +52,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    
+
     Wrist.getInstance().z();
     Arm.getInstance().z();  
     Drivetrain.getInstance().zero(); 
     
-    new Auto();
-   
+    a = new Auto();
+    a.start();
+
+
   }
 
   /**
@@ -76,7 +79,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-
+    a.cancel();
+    a.close();
     
 
     //should be erased for comp
@@ -94,7 +98,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
-    
+    SmartDashboard.putNumber("heading", NavX.getInstance().getHeading());
   }
 
   /**

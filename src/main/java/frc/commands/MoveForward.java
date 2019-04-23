@@ -18,12 +18,14 @@ public class MoveForward extends Command {
  
   private  double distance;
   private final double FEET_TO_TICKS = 26.523624420166016 / 4;
+  private double speed;
 
-  public MoveForward(double feet) {
+  public MoveForward(double feet, double s) {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
 
     distance = feet * FEET_TO_TICKS;
+    speed = s;
 
     start();
   }
@@ -32,6 +34,8 @@ public class MoveForward extends Command {
   @Override
   protected void initialize() {
 
+    NavX.getInstance().setAdjustment(-NavX.getInstance().getHeading());
+    
     Drivetrain.getInstance().zero();
     // Arm.getInstance().setState(ArmState.CARGO_HIGH);
 
@@ -41,18 +45,34 @@ public class MoveForward extends Command {
   @Override
   protected void execute() {
 
-    SmartDashboard.putNumber("Heading", NavX.getInstance().getHeading());
-    SmartDashboard.putNumber("Acceleration Norm", NavX.getInstance().getAcceleration());
     double offset = 0;
-    if(NavX.getInstance().getHeading() > 180 && NavX.getInstance().getHeading() < 357){
-      System.out.println("left");
-      offset = -.4;
-    }else if(NavX.getInstance().getHeading() < 180 && NavX.getInstance().getHeading() > 3){
-      System.out.println("right");
-      offset = .4;
+    
+    // if(NavX.getInstance().getHeading() > 180 && NavX.getInstance().getHeading() < 359){
+      
+      //   System.out.println("left");
+      //   offset = -0.4;
+      
+      // }else if(NavX.getInstance().getHeading() < 180 && NavX.getInstance().getHeading() > 1){
+        
+        //   System.out.println("right");
+        //   offset = 0.4;
+        
+        // }
+        
+    
+    double heading = NavX.getInstance().getHeading();
+    if(heading > 180){
+      heading -= 360;
     }
 
-    Drivetrain.getInstance().setSpeed(-.3, offset);
+    SmartDashboard.putNumber("processed Heading", heading);
+    
+
+    offset = (1/Math.PI) * Math.atan(heading/2);
+
+    SmartDashboard.putNumber("offset", offset);
+
+    Drivetrain.getInstance().setSpeed(speed, offset);
 
   }
 
@@ -66,7 +86,7 @@ public class MoveForward extends Command {
   @Override
   protected void end() {
     
-    // new PlaceBall();
+    new PlaceBall();
 
   }
 

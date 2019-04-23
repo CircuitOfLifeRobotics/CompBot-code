@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.I2C.Port;
 public class NavX {
 
   private static NavX instance;
-  private ArrayList<Double> accelLog;
+  private double adjustment;
   private final AHRS ahrs;
 
   public static NavX getInstance(){
@@ -29,16 +29,22 @@ public class NavX {
   private NavX(){
     
     ahrs = new AHRS(Port.kMXP);
-    accelLog = new ArrayList<Double>();
+    adjustment = 0;
 
     ahrs.resetDisplacement();
     ahrs.reset();
 
   }
 
+  public void setAdjustment(double angle) {
+
+    adjustment = angle;
+
+  }
+
   public double getHeading() {
 
-    return ahrs.getFusedHeading();
+    return ahrs.getFusedHeading() + adjustment;
   
   }
 
@@ -56,16 +62,6 @@ public class NavX {
 
 
   // }
-
-  public double getAcceleration() {
-
-    double val = Math.sqrt(Math.pow(ahrs.getWorldLinearAccelX(), 2) + Math.pow(ahrs.getWorldLinearAccelY(), 2) + Math.pow(ahrs.getWorldLinearAccelZ(), 2));
-
-    accelLog.add(0, val);
-
-    return val;
-
-  }
 
   public double getDisplacement() {
 
