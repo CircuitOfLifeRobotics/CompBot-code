@@ -7,56 +7,62 @@
 
 package frc.commands;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
-import frc.subsystems.Arm;
-import frc.subsystems.Intake;
-import frc.subsystems.Wrist;
-import frc.subsystems.Arm.ArmState;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
+import frc.subsystems.Drivetrain;
+import frc.utilities.Limelight;
+import frc.utilities.Ultra;
 
-public class PlacePanel extends TimedCommand {
+public class MoveDistance extends Command {
 
-  public PlacePanel() {
-    super(2);
+  double offset;
+  double desiredDistance;
+  double distance;
+  double speed;
+
+  public MoveDistance(double distance) {
+    
+    offset = 0;
+    
+    // start();
     
   }
-
-  public PlacePanel(boolean isInstant){
-    super(2);
-    if(isInstant){
-      start();
-    }
-  }
-
+  
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
-    if(!Arm.getInstance().getCurrentArmState().equals(ArmState.CARGO_LOW)){
-      Intake.getInstance().setSpeed(-1);
-    }
-
-    Wrist.getInstance().setSetpoint(Wrist.getInstance().getSetpoint() - 1000);
-
+    System.out.println("MOveDistancce is run");
   }
-
+  
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-
     
+    desiredDistance = SmartDashboard.getNumber("Desired Distance", 15);
+    
+    distance = desiredDistance - Ultra.getInstance().getInches();
+      
+    speed = ((Math.atan(1.5 * distance)) / Math.PI) / 1.5;
 
+    Drivetrain.getInstance().setSpeed(speed, 0);
+  
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return isTimedOut();
+
+    return (speed == 0);
+  
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Intake.getInstance().setSpeed(0);
+
+    Drivetrain.getInstance().setSpeed(0, 0);
+
   }
 
   // Called when another command which requires one or more of the same

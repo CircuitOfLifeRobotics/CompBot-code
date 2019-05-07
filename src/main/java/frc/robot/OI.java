@@ -13,7 +13,10 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.buttons.POVButton;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.MoveArm;
+import frc.commands.MoveDistance;
+import frc.commands.Move_VOS_Distance;
 import frc.commands.PlacePanel;
 import frc.subsystems.Arm;
 import frc.subsystems.Drivetrain;
@@ -29,6 +32,9 @@ public class OI {
     private final Joystick stick = new Joystick(1);
     private final Joystick wheel = new Joystick(2);
 
+    public Button abort;
+
+    public Button multiuse;
     
     private Button switchButton;
     private Button a;
@@ -75,6 +81,13 @@ public class OI {
 
     private OI(){
 
+
+        multiuse = new JoystickButton(stick, 2);
+        multiuse.whenActive(new Move_VOS_Distance(SmartDashboard.getNumber("Desired Distance", 15)));
+
+
+        abort = new JoystickButton(wheel, 13);
+        abort.whenActive(new MoveDistance(SmartDashboard.getNumber("Desired Distance", 15)));
         switchButton = new JoystickButton(xbox, 5);
 
         a = new JoystickButton(xbox, 1);

@@ -155,6 +155,12 @@ public class Arm extends PIDSubsystem {
 
   }
 
+  public TalonSRX getPigeonTalon(){
+
+    return slaveOne;
+
+  }
+
   @Override
   protected void usePIDOutput(double output) {
     

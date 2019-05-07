@@ -7,35 +7,35 @@
 
 package frc.commands;
 
-import edu.wpi.first.wpilibj.command.TimedCommand;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotMap;
 import frc.subsystems.Arm;
-import frc.subsystems.Intake;
-import frc.subsystems.Wrist;
+import frc.subsystems.Drivetrain;
 import frc.subsystems.Arm.ArmState;
+import frc.utilities.NavX;
 
-public class PlacePanel extends TimedCommand {
+public class Turn extends Command {
+ 
+  private  double turnAngle;
+  private double offset;
 
-  public PlacePanel() {
-    super(2);
-    
-  }
+  public Turn(double angleAtWhichToTurn) {
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
 
-  public PlacePanel(boolean isInstant){
-    super(2);
-    if(isInstant){
-      start();
-    }
+    turnAngle = angleAtWhichToTurn;
+
+    start();
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
 
-    if(!Arm.getInstance().getCurrentArmState().equals(ArmState.CARGO_LOW)){
-      Intake.getInstance().setSpeed(-1);
-    }
-
-    Wrist.getInstance().setSetpoint(Wrist.getInstance().getSetpoint() - 1000);
+    Drivetrain.getInstance().zero();
+    NavX.getInstance().setAdjustment(NavX.getInstance().getAdjustment() + turnAngle);
+    // Arm.getInstance().setState(ArmState.CARGO_HIGH);
 
   }
 
@@ -43,20 +43,37 @@ public class PlacePanel extends TimedCommand {
   @Override
   protected void execute() {
 
+    offset = 0;
+
+    double heading = NavX.getInstance().getHeading();
+
+    if(heading > 180){
     
+      heading -= 360;
+    
+    }
+    
+    offset = (1/Math.PI) * Math.atan(heading/2);
+
+    SmartDashboard.putNumber("offset", offset);
+
+    Drivetrain.getInstance().setSpeed(0, offset);
 
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
-  protected boolean isFinished() {
-    return isTimedOut();
+  public boolean isFinished() {
+
+    return (Math.abs(offset) < RobotMap.AlignmentDeadzone);
+
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Intake.getInstance().setSpeed(0);
+    Drivetrain.getInstance().setSpeed(0, 0);
+
   }
 
   // Called when another command which requires one or more of the same

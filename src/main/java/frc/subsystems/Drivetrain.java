@@ -8,6 +8,7 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -58,12 +59,11 @@ public class Drivetrain extends Subsystem {
 
     isHigh = true;
     shift.set(Value.kReverse);
-
     drive = new DifferentialDrive(leftMaster, rightMaster);
 
   }
   public double getPos(){
-   return rightMaster.getEncoder().getPosition();
+   return (rightMaster.getEncoder().getPosition() + -leftMaster.getEncoder().getPosition()) / 2;
   }
 
   public void shift(){

@@ -33,9 +33,9 @@ public class MoveForward extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-
-    NavX.getInstance().setAdjustment(-NavX.getInstance().getHeading());
     
+    NavX.getInstance().zeroHeading();
+
     Drivetrain.getInstance().zero();
     // Arm.getInstance().setState(ArmState.CARGO_HIGH);
 
@@ -78,15 +78,19 @@ public class MoveForward extends Command {
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
-  protected boolean isFinished() {
-    return Drivetrain.getInstance().getPos() >= distance;
+  public boolean isFinished() {
+    SmartDashboard.putNumber("actual distance", Drivetrain.getInstance().getPos());
+    SmartDashboard.putNumber("desired distance", distance);
+    return Math.abs(Drivetrain.getInstance().getPos()) >= Math.abs(distance);
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
     
-    new PlaceBall();
+    
+
+    Drivetrain.getInstance().setSpeed(0, 0);
 
   }
 

@@ -16,6 +16,9 @@ public class PlaceBall extends TimedCommand {
     // eg. requires(chassis);
 
     super(2);
+
+
+    start();
   }
 
   // Called just before this Command runs the first time

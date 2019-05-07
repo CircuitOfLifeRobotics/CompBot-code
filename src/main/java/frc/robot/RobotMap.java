@@ -9,6 +9,9 @@ package frc.robot;
 
 public class RobotMap {
 
+    //Ultra Sensor ports
+    public static final int ULTRASONICSENSOR_PORT = 0;
+
     //drivetrain spark ports
     public static final int leftMaster = 3;
     public static final int leftSlaveA = 4;
@@ -60,7 +63,7 @@ public class RobotMap {
     public static final double wristGrabPanel = -1282;
 
     public static final double wristCargoLow = -160;//same as panel low
-    public static final double wristCargoHigh = -3920;
+    public static final double wristCargoHigh = -4100;
     
     public static final double wristBottom = -3150;
     public static final double wristMiddle = -4200;
@@ -75,5 +78,15 @@ public class RobotMap {
     /***********************************/
 
     public static final double desiredYValue = -18.91;// w/ big wheels: -20.33
+    public static final double AlignmentDeadzone = 0.0001;
 
+    // regression equation constants
+    public static final double VOS_A2 = 380.615;
+    public static final double VOS_B2 = -.624697;
+    public static final double VOS_C2 = 5.5952;
+    public static final double VOS_D2 = -19.266;
+
+    public static double VOS_Equation(double input){
+        return (VOS_A2 / (VOS_B2 * (input - VOS_C2))) + VOS_D2;
+    }
 }

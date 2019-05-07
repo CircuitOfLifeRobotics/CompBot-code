@@ -36,6 +36,18 @@ public class NavX {
 
   }
 
+  public void zeroHeading() {
+
+    setAdjustment(-ahrs.getFusedHeading());
+
+  }
+
+  public double getAdjustment(){
+
+    return adjustment;
+
+  }
+
   public void setAdjustment(double angle) {
 
     adjustment = angle;
@@ -44,7 +56,7 @@ public class NavX {
 
   public double getHeading() {
 
-    return ahrs.getFusedHeading() + adjustment;
+    return (ahrs.getFusedHeading() + adjustment) % 360;
   
   }
 

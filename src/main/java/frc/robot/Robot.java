@@ -7,14 +7,21 @@
 
 package frc.robot;
 
+import javax.naming.LimitExceededException;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.Auto;
+import frc.commands.MoveDistance;
+import frc.commands.Move_VOS_Distance;
 import frc.subsystems.Arm;
 import frc.subsystems.Drivetrain;
 import frc.subsystems.Wrist;
+import frc.utilities.Limelight;
 import frc.utilities.NavX;
+import frc.utilities.Pigeon;
+import frc.utilities.Ultra;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,8 +34,6 @@ import frc.utilities.NavX;
 //@date 3/12
 
 public class Robot extends TimedRobot {
-
-  Auto a;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -52,15 +57,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    Scheduler.getInstance().removeAll();
 
     Wrist.getInstance().z();
     Arm.getInstance().z();  
-    Drivetrain.getInstance().zero(); 
-    
-    a = new Auto();
-    a.start();
+    Drivetrain.getInstance().zero();
 
-
+    Auto.run();
   }
 
   /**
@@ -69,7 +72,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     
-    System.out.println(Drivetrain.getInstance().getPos());
     // Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
 
   }
@@ -79,26 +81,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    a.cancel();
-    a.close();
-    
-
-    //should be erased for comp
-    // Wrist.getInstance().z();
-    // Arm.getInstance().z();
+    OI.getInstance();
+    Scheduler.getInstance().removeAll();
+    SmartDashboard.putNumber("Desired Distance", 15);
+    SmartDashboard.getNumber("Desired Distance", 15);
 
   }
-  
-  /**
-   * This function is called periodically during teleoperated mode.
-   */
-  
   
   @Override
   public void teleopPeriodic() {
 
-    Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
-    SmartDashboard.putNumber("heading", NavX.getInstance().getHeading());
+
+
+    // Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
+
   }
 
   /**
