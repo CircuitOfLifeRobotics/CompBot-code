@@ -18,6 +18,7 @@ import frc.commands.Move_VOS_Distance;
 import frc.subsystems.Arm;
 import frc.subsystems.Drivetrain;
 import frc.subsystems.Wrist;
+import frc.utilities.Lidar;
 import frc.utilities.Limelight;
 import frc.utilities.NavX;
 import frc.utilities.Pigeon;
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
     Arm.getInstance().z();  
     Drivetrain.getInstance().zero();
 
-    Auto.run();
+    // Auto.run();
   }
 
   /**
@@ -81,19 +82,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
-    OI.getInstance();
     Scheduler.getInstance().removeAll();
-    SmartDashboard.putNumber("Desired Distance", 15);
-    SmartDashboard.getNumber("Desired Distance", 15);
 
   }
   
   @Override
   public void teleopPeriodic() {
 
+    Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
 
+    System.out.println(Arm.getInstance().getPos());
+    System.out.println(Wrist.getInstance().getPos());
 
-    // Drivetrain.getInstance().setSpeed(OI.getInstance().getDriveFwd(), OI.getInstance().getDriveHoz());
+    SmartDashboard.putNumber("LIDAR distance", Lidar.getInstance().getDistance());
+
+    SmartDashboard.putNumber("Vert", RobotMap.VOS_Equation(Limelight.getInstance().getY()));
 
   }
 

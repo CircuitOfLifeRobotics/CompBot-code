@@ -47,7 +47,7 @@ public class Ultra {
 
     public double getInches(){
 
-        return uSensor.getValue() / 10.0;
+        return (uSensor.getValue() / 10.0) + 3;
 
     }
 
